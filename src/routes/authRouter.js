@@ -6,7 +6,6 @@ import User from '../dao/models/userModel.js';
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecreto';
 
-// Registro de usuario
 router.post('/register', async (req, res) => {
   try {
     const { first_name, last_name, email, age, password, role } = req.body;
@@ -22,18 +21,15 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// Login de usuario
 router.post('/login', (req, res, next) => {
   passport.authenticate('login', { session: false }, (err, user, info) => {
     if (err) return next(err);
     if (!user) return res.status(401).json({ message: info?.message || 'Login fallido' });
-    // Generar JWT
     const token = jwt.sign({ id: user._id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
     res.json({ message: 'Login exitoso', token });
   })(req, res, next);
 });
 
-// Ruta protegida de ejemplo
 router.get('/profile', passport.authenticate('jwt', { session: false }), (req, res) => {
   res.json({ user: req.user });
 });

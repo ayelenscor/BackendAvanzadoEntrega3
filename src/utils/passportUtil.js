@@ -6,7 +6,6 @@ import bcrypt from 'bcrypt';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecreto';
 
-// Estrategia Local para login
 passport.use('login', new LocalStrategy({
   usernameField: 'email',
   passwordField: 'password',
@@ -27,7 +26,6 @@ passport.use('login', new LocalStrategy({
   }
 }));
 
-// Estrategia JWT para autenticación por token
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: JWT_SECRET,
@@ -45,7 +43,6 @@ passport.use('jwt', new JwtStrategy(jwtOptions, async (jwt_payload, done) => {
   }
 }));
 
-// Serialización y deserialización (no se usan sesiones, pero se dejan por compatibilidad)
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });

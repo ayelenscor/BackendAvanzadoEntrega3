@@ -19,18 +19,15 @@ const uri = 'mongodb://127.0.0.1:27017/entrega-final';
 mongoose.connect(uri);
 
 
-//Handlebars Config
 app.engine('handlebars', handlebars.engine());
 app.set('views', __dirname + '/../views');
 app.set('view engine', 'handlebars');
 
-// Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(passport.initialize());
 
-// Routers
 app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
 app.use('/api/auth', authRouter);
