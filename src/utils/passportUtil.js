@@ -27,7 +27,12 @@ passport.use('login', new LocalStrategy({
 }));
 
 const jwtOptions = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  jwtFromRequest: ExtractJwt.fromExtractors([
+    (req) => {
+      if (!req || !req.cookies) return null;
+      return req.cookies.token || null;
+    }
+  ]),
   secretOrKey: JWT_SECRET,
 };
 
@@ -43,17 +48,19 @@ passport.use('jwt', new JwtStrategy(jwtOptions, async (jwt_payload, done) => {
   }
 }));
 
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser(async (id, done) => {
+// Estrategia alias 'current' para identificar al usuario actual (misma lógica que 'jwt')
+passport.use('current', new JwtStrategy(jwtOptions, async (jwt_payload, done) => {
   try {
-    const user = await User.findById(id);
-    done(null, user);
+    const user = await User.findById(jwt_payload.id);
+    if (!user) {
+      return done(null, false);
+    }
+    return done(null, user);
   } catch (err) {
-    done(err, null);
+    return done(err, false);
   }
-});
+}));
+
+// Not using sessions; serialize/deserialize are unnecessary.
 
 export default passport;

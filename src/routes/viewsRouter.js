@@ -1,20 +1,23 @@
 import { Router } from 'express';
-import { productDBManager } from '../dao/productDBManager.js';
-import { cartDBManager } from '../dao/cartDBManager.js';
+import { ProductRepository } from '../dao/productRepository.js';
+import { CartRepository } from '../dao/cartRepository.js';
+import { productToDTO } from '../dao/dtos/productDTO.js';
+import { cartToDTO } from '../dao/dtos/cartDTO.js';
 
 const router = Router();
-const ProductService = new productDBManager();
-const CartService = new cartDBManager(ProductService);
+const ProductService = new ProductRepository();
+const CartService = new CartRepository(ProductService);
 
 router.get('/products', async (req, res) => {
     const products = await ProductService.getAllProducts(req.query);
+    const docs = (products.docs || []).map(productToDTO);
 
     res.render(
         'index',
         {
             title: 'Productos',
             style: 'index.css',
-            products: JSON.parse(JSON.stringify(products.docs)),
+            products: JSON.parse(JSON.stringify(docs)),
             prevLink: {
                 exist: products.prevLink ? true : false,
                 link: products.prevLink
@@ -29,12 +32,13 @@ router.get('/products', async (req, res) => {
 
 router.get('/realtimeproducts', async (req, res) => {
     const products = await ProductService.getAllProducts(req.query);
+    const docs = (products.docs || []).map(productToDTO);
     res.render(
         'realTimeProducts',
         {
             title: 'Productos',
             style: 'index.css',
-            products: JSON.parse(JSON.stringify(products.docs))
+            products: JSON.parse(JSON.stringify(docs))
         }
     )
 });
@@ -42,7 +46,7 @@ router.get('/realtimeproducts', async (req, res) => {
 router.get('/cart/:cid', async (req, res) => {
     const response = await CartService.getProductsFromCartByID(req.params.cid);
 
-    if (response.status === 'error') {
+    if (!response) {
         return res.render(
             'notFound',
             {
@@ -52,12 +56,14 @@ router.get('/cart/:cid', async (req, res) => {
         );
     }
 
+    const dto = cartToDTO(response);
+
     res.render(
         'cart',
         {
             title: 'Carrito',
             style: 'index.css',
-            products: JSON.parse(JSON.stringify(response.products))
+            products: JSON.parse(JSON.stringify(dto.products))
         }
     )
 });

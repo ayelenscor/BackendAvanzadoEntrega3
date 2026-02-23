@@ -12,6 +12,7 @@ import sessionsRouter from './routes/sessionsRouter.js';
 import __dirname from './utils/constantsUtil.js';
 import websocket from './websocket.js';
 import passport from './utils/passportUtil.js';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.set('view engine', 'handlebars');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use(cookieParser());
 app.use(passport.initialize());
 
 app.use('/api/products', productRouter);

@@ -1,16 +1,18 @@
 import { Router } from 'express';
-import { productDBManager } from '../dao/productDBManager.js';
+import { ProductRepository } from '../dao/productRepository.js';
+import { productToDTO } from '../dao/dtos/productDTO.js';
 import { uploader } from '../utils/multerUtil.js';
 
 const router = Router();
-const ProductService = new productDBManager();
+const ProductService = new ProductRepository();
 
 router.get('/', async (req, res) => {
     const result = await ProductService.getAllProducts(req.query);
+    const docs = (result.docs || []).map(productToDTO);
 
     res.send({
         status: 'success',
-        payload: result
+        payload: { ...result, docs }
     });
 });
 
@@ -20,7 +22,7 @@ router.get('/:pid', async (req, res) => {
         const result = await ProductService.getProductByID(req.params.pid);
         res.send({
             status: 'success',
-            payload: result
+            payload: productToDTO(result)
         });
     } catch (error) {
         res.status(400).send({
@@ -43,7 +45,7 @@ router.post('/', uploader.array('thumbnails', 3), async (req, res) => {
         const result = await ProductService.createProduct(req.body);
         res.send({
             status: 'success',
-            payload: result
+            payload: productToDTO(result)
         });
     } catch (error) {
         res.status(400).send({
