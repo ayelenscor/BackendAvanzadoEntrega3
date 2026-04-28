@@ -8,6 +8,7 @@ Proyecto de backend desarrollado con Express.js, MongoDB y Mongoose. Incluye aut
 - Node.js (v14 o superior)
 - MongoDB (en ejecución localmente en puerto 27017)
 - npm o yarn
+- Docker (opcional, para ejecutar con contenedores)
 
 ### Pasos de instalación
 
@@ -24,6 +25,27 @@ npm start
 ```
 
 El servidor se ejecutará en `http://localhost:8080`
+
+### Con Docker
+
+```bash
+docker-compose up -d
+```
+
+Esto iniciará tanto la aplicación como MongoDB en contenedores aislados.
+
+## Documentación Swagger/OpenAPI
+
+La documentación interactiva de la API está disponible en:
+```
+http://localhost:8080/api-docs
+```
+
+Desde aquí puedes:
+- Ver todos los endpoints disponibles
+- Probrar las rutas directamente
+- Ver ejemplos de requests y responses
+- Consultar los esquemas de datos
 
 ## Estructura del Proyecto
 
@@ -168,12 +190,93 @@ Obtiene todas las mascotas insertadas en la base de datos.
 - **Express Handlebars** - Motor de plantillas
 - **Multer** - Carga de archivos
 - **JWT** - Tokens de autenticación
+- **Jest** - Framework de testing
+- **Swagger/OpenAPI** - Documentación interactiva
+- **Docker** - Containerización
 
 ## Variables de Entorno
 
 MongoDB se conecta a: `mongodb://127.0.0.1:27017/entrega-final`
 
 Para cambiar la configuración, editar en `src/app.js`
+
+## Testing
+
+Este proyecto incluye una suite de tests completa con Jest y Supertest.
+
+### Ejecutar tests
+
+```bash
+npm test
+```
+
+### Ejecutar tests en modo watch
+
+```bash
+npm run test:watch
+```
+
+### Cobertura de pruebas
+
+```bash
+npm test -- --coverage
+```
+
+Los tests cubren:
+- ✅ Generación de datos mockeados
+- ✅ Inserción en base de datos
+- ✅ Validación de parámetros
+- ✅ Manejo de errores
+- ✅ Estructura de respuestas
+
+## Construcción de Imagen Docker
+
+### Build local
+
+```bash
+docker build -t backend-avanzado-entrega2:latest .
+```
+
+### Ejecución
+
+```bash
+docker run -p 8080:8080 backend-avanzado-entrega2:latest
+```
+
+### Optimizaciones Docker
+
+- Imagen base ligera (node:18-alpine)
+- Multi-stage build implícito
+- Copiar solo archivos necesarios
+- Health checks configurados
+- Volúmenes para persistencia de datos
+
+## Despliegue en DockerHub
+
+### Requirements
+- Cuenta en DockerHub
+- Credenciales configuradas en GitHub Secrets:
+  - `DOCKERHUB_USERNAME`
+  - `DOCKERHUB_TOKEN`
+
+### Flujo automático
+Cada push a la rama `main` construye y publica automáticamente la imagen en DockerHub.
+
+## CI/CD con GitHub Actions
+
+Este proyecto incluye pipelines automatizados:
+
+### 1. Tests Automáticos (.github/workflows/test.yml)
+- Se ejecuta en cada push y pull request
+- Corre tests contra Node 16.x y 18.x
+- Compatible con MongoDB local
+- Genera reportes de cobertura
+
+### 2. Docker Build y Push (.github/workflows/docker.yml)
+- Se ejecuta en pushes a main
+- Construye y publica imagen en DockerHub
+- Genera tags automáticos (latest, versión, git hash)
+- Cachea capas para optimizar builds
 
 ## Autor
 

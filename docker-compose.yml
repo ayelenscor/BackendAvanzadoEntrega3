@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongo:27017/entrega-final
+    depends_on:
+      - mongo
+    networks:
+      - backend-network
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:7-alpine
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - backend-network
+    restart: unless-stopped
+
+volumes:
+  mongo-data:
+
+networks:
+  backend-network:
+    driver: bridge

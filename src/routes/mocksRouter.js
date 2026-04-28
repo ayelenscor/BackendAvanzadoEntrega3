@@ -7,6 +7,38 @@ const router = express.Router();
 const userRepository = new UserRepository();
 const petRepository = new PetRepository();
 
+/**
+ * @swagger
+ * /api/mocks/generateData:
+ *   post:
+ *     summary: Generar e insertar datos mockeados en la BD
+ *     tags:
+ *       - Mocks
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               users:
+ *                 type: integer
+ *                 example: 50
+ *               pets:
+ *                 type: integer
+ *                 example: 30
+ *     responses:
+ *       201:
+ *         description: Datos generados e insertados correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/GenerateDataResponse'
+ *       400:
+ *         description: Parámetros inválidos
+ *       500:
+ *         description: Error al generar e insertar datos
+ */
 router.post('/generateData', async (req, res) => {
     try {
         const { users = 0, pets = 0 } = req.body;
@@ -47,6 +79,30 @@ router.post('/generateData', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/mocks/mockingusers:
+ *   get:
+ *     summary: Generar usuarios mockeados sin insertar en BD
+ *     tags:
+ *       - Mocks
+ *     parameters:
+ *       - in: query
+ *         name: quantity
+ *         schema:
+ *           type: integer
+ *           default: 50
+ *         description: Cantidad de usuarios a generar
+ *     responses:
+ *       200:
+ *         description: Usuarios mockeados generados exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MockUsers'
+ *       500:
+ *         description: Error al generar usuarios
+ */
 router.get('/mockingusers', async (req, res) => {
     try {
         const quantity = parseInt(req.query.quantity) || 50;
@@ -65,6 +121,30 @@ router.get('/mockingusers', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/mocks/mockingpets:
+ *   get:
+ *     summary: Generar mascotas mockeadas sin insertar en BD
+ *     tags:
+ *       - Mocks
+ *     parameters:
+ *       - in: query
+ *         name: quantity
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Cantidad de mascotas a generar
+ *     responses:
+ *       200:
+ *         description: Mascotas mockeadas generadas exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MockPets'
+ *       500:
+ *         description: Error al generar mascotas
+ */
 router.get('/mockingpets', (req, res) => {
     try {
         const quantity = parseInt(req.query.quantity) || 10;
@@ -83,6 +163,32 @@ router.get('/mockingpets', (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/mocks/users:
+ *   get:
+ *     summary: Obtener todos los usuarios de la BD
+ *     tags:
+ *       - Mocks
+ *     responses:
+ *       200:
+ *         description: Usuarios obtenidos exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 quantity:
+ *                   type: integer
+ *                 payload:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/User'
+ *       500:
+ *         description: Error al obtener usuarios
+ */
 router.get('/users', async (req, res) => {
     try {
         const users = await userRepository.getAllUsers();
@@ -100,6 +206,32 @@ router.get('/users', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/mocks/pets:
+ *   get:
+ *     summary: Obtener todas las mascotas de la BD
+ *     tags:
+ *       - Mocks
+ *     responses:
+ *       200:
+ *         description: Mascotas obtenidas exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 quantity:
+ *                   type: integer
+ *                 payload:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Pet'
+ *       500:
+ *         description: Error al obtener mascotas
+ */
 router.get('/pets', async (req, res) => {
     try {
         const pets = await petRepository.getAllPets();

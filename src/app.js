@@ -2,7 +2,8 @@ import express from 'express';
 import handlebars from 'express-handlebars';
 import {Server} from 'socket.io';
 import mongoose from 'mongoose';
-
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpecs from './utils/swagger.js';
 
 import productRouter from './routes/productRouter.js';
 import cartRouter from './routes/cartRouter.js';
@@ -30,6 +31,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(cookieParser());
 app.use(passport.initialize());
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
