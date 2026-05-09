@@ -25,24 +25,22 @@ export const generateMockUsers = async (quantity) => {
     if (!quantity || quantity <= 0) {
         return [];
     }
-
-    const hashedPassword = await bcrypt.hash('coder123', 10);
-
     const users = [];
+    const hashedPassword = await bcrypt.hash('coder123', 10);
     for (let i = 0; i < quantity; i++) {
         const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
         const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-        
         users.push({
+            _id: generateObjectId(),
             first_name: firstName,
             last_name: lastName,
             email: generateEmail(firstName, lastName, i),
             age: Math.floor(Math.random() * (80 - 18 + 1)) + 18,
-            password: 'coder123',
+            password: hashedPassword,
             role: roles[Math.floor(Math.random() * roles.length)],
+            pets: [],
         });
     }
-
     return users;
 };
 

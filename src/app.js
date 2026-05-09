@@ -10,7 +10,7 @@ import cartRouter from './routes/cartRouter.js';
 import viewsRouter from './routes/viewsRouter.js';
 import authRouter from './routes/authRouter.js';
 import sessionsRouter from './routes/sessionsRouter.js';
-import mocksRouter from './routes/mocksRouter.js';
+import mocksRouter from './routes/mocks.router.js';
 import __dirname from './utils/constantsUtil.js';
 import websocket from './websocket.js';
 import passport from './utils/passportUtil.js';

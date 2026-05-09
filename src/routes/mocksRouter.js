@@ -145,23 +145,7 @@ router.get('/mockingusers', async (req, res) => {
  *       500:
  *         description: Error al generar mascotas
  */
-router.get('/mockingpets', (req, res) => {
-    try {
-        const quantity = parseInt(req.query.quantity) || 10;
-        const pets = generateMockPets(quantity);
-        res.status(200).json({
-            success: true,
-            quantity: pets.length,
-            payload: pets
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error generating mock pets',
-            error: error.message
-        });
-    }
-});
+// ...endpoint /mockingpets migrado a mocks.router.js...
 
 /**
  * @swagger
